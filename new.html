@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body><br>
+
+    <hr>
+    <div id="total">
+    <div class="forms">
+    <h1>Welcome to Users input page</h1>
+    <p>please fill your details appropriately to add new record</p>
+    
+        <input type="hidden" id="index">
+        <input class="input " type="text"  id="fullName" placeholder="full name"> <br>
+        <input class="input" type="email"  id="email" placeholder="email"> <br>
+        <input class="input" type="tel"  id="phone" placeholder="contact number"> <br>
+        <input class="input" type="text"  id="pics"> <br>
+        <button class="add-btn" onclick="add()">Add</button> <button class="update-btn" onclick="update()">update</button>
+    </div>
+    <div class="search">
+       
+        <h1 id="heading">Search User</h1>
+        <input type="search" id="search-field" class="search-box" placeholder="search user here..." required>
+        <button onclick="searchOne();" class="search-btn">Search One</button>
+        <button onclick="searchAll();" class="search-btn">Search All</button>
+        <button onclick="searchPart();" class="search-btn">Search Part</button>
+        <p id="record"></p>
+        <button onclick="goBack()" id="back-btn" class="search-btn">Back to Profiles</button>
+    </div>
+</div>
+<hr> 
+    <h1>Users</h1> 
+    <div id="users"></div>
+<script>
+     users = [
+           {
+
+               "fullName" : "Oyetunji Atilade",
+               "email" : "atiladeoyetunji@gmail.com",
+               "phone" : "08119592851",
+                "pics" : "./mark-lewis-8bi8IOH30cU-unsplash.jpg"
+           },
+           {
+               "fullName" : "john doe",
+               "email" : "johndoes@gmail.com",
+               "phone" : "08119592851",
+               "pics" : "./mark-lewis-8bi8IOH30cU-unsplash.jpg"
+           },
+           {
+               "fullName" : "colly max",
+               "email" : "max@gmail.com",
+               "phone" : "0817876583751",
+               "pics" : "./mark-lewis-8bi8IOH30cU-unsplash.jpg"
+           }
+       ]
+
+       localStorage.setItem("now", JSON.stringify(users))
+        // get data from  local storage
+    users = JSON.parse(localStorage.getItem("now"))
+
+    
+        // Creates new array if none exists in local storage
+        if (users == null) {
+            users = []
+        }
+
+function add() {
+       newUser =
+       {    "fullName" : document.getElementById("fullName").value,
+                "email" : document.getElementById("email").value,
+                "phone" : document.getElementById("phone").value,
+                "pics" : "./1.jpg"
+                
+            }
+      
+       users.push(newUser);
+       localStorage.setItem("now", JSON.stringify(users));
+       display();
+    }
+
+    function Delete(i) {
+        con = confirm("Are you sure you want to delete " + users[i].fullName +"'s" + " details?")
+		if (con == true) {
+        users.splice(i, 1)
+        localStorage.setItem("now", JSON.stringify(users))
+        display()
+    }
+    }
+
+    function edit(i) {
+        updatedUser={
+            "fullName" : prompt("Enter FullName", users[i].fullName ),
+               "email" : prompt("Enter Email", users[i].email),
+               "phone" : prompt("Enter phone number", users[i].phone),
+               "pics" : prompt("input file address", users[i].pics)
+        }
+        users[i] = updatedUser
+        localStorage.setItem("now", JSON.stringify(users))
+        display()
+    }
+  function update(){
+            i =  document.getElementById("index").value
+      let updatedRecord = 
+      {
+                "fullName" : document.getElementById("fullName").value,
+                "email" : document.getElementById("email").value,
+                "phone" : document.getElementById("phone").value,
+               "pics" : document.getElementById("pics").value,
+      }
+      users[i] = updatedRecord
+      localStorage.setItem("now", JSON.stringify(users))
+      display()
+  }
+
+  function triggerEdit(i) {
+
+      userRecord = users[i]
+                 document.getElementById("fullName").value = userRecord.fullName
+                 document.getElementById("email").value = userRecord.email
+                 document.getElementById("phone").value = userRecord.phone
+                 document.getElementById("pics").value = userRecord.pics
+                 document.getElementById("index").value = i
+  }
+
+  function goBack(){
+            window.location.reload();
+        }
+
+          // Declaring the Search function for one result
+          function searchOne() {
+            searchInput = document.getElementById('search-field').value.toLowerCase();
+            if (!searchInput || searchInput.length <= 3) {
+                alert("please enter a name(minimum of four letters)")
+            } else {
+               foundUserObj = users.find(user=>user.fullName.toLowerCase()== searchInput);
+                if(foundUserObj == null ||foundUserObj == undefined) {
+                    document.getElementById("back-btn").style.display = "block";
+                    document.getElementById("record").innerHTML = `No record found for ${searchInput}`;
+                } else {
+                    users =[];
+                    users.push(foundUserObj);
+                    if (users.length <= 1) {
+                        document.getElementById("record").innerHTML = `${users.length} record found for ${searchInput}`;
+                    } else { 
+                        document.getElementById("record").innerHTML = `${users.length} records found for ${searchInput}`;
+                    }
+                    document.getElementById("back-btn").style.display = "block";
+                    display();
+                }
+            } 
+        }
+
+          // Declaring the search function for all results
+          function searchAll() {
+            searchInput = document.getElementById('search-field').value.toLowerCase();
+            if (!searchInput || searchInput.length <= 3) {
+                alert("please enter a name(minimum of four letters)")
+            } else {
+               foundUserObj = users.filter(user=>user.fullName.toLowerCase()== searchInput);
+                if(foundUserObj == null ||foundUserObj == undefined) {
+                    document.getElementById("back-btn").style.display = "block";
+                    document.getElementById("record").innerHTML = `No record found for ${searchInput}`;
+                } else {
+                    users =[];
+                    users.push(foundUserObj);
+                    if (users.length <= 1) {
+                        document.getElementById("record").innerHTML = `${users.length} record found for ${searchInput}`;
+                    } else { 
+                        document.getElementById("record").innerHTML = `${users.length} records found for ${searchInput}`;
+                    }
+                    document.getElementById("back-btn").style.display = "block";
+                    display();
+                }
+            } 
+        }
+        
+        // declaring the search function for part matches
+        function searchPart(){
+            searchInput = document.getElementById("search-field").value.toLowerCase();
+            foundUserObj = users.filter(user=>user.name.toLowerCase().includes(searchInput));
+            // conditional ternary operator
+            if(foundUserObj == null ||foundUserObj == undefined) {
+                    document.getElementById("back-btn").style.display = "block";
+                    document.getElementById("record").innerHTML = `No record found for ${searchInput}`;
+                } else {
+                    users =[];
+                    users.push(foundUserObj);
+                    if (users.length <= 1) {
+                        document.getElementById("record").innerHTML = `${users.length} record found for ${searchInput}`;
+                    } else { 
+                        document.getElementById("record").innerHTML = `${users.length} records found for ${searchInput}`;
+                    }
+                    document.getElementById("back-btn").style.display = "block";
+                    display();
+                }
+            } 
+        
+function display(){
+
+cont = ''
+for(i=0; i<users.length; i++)
+{
+    cont += ` <div id="container">
+        
+        <img src="${users[i].pics}"> <br>
+        <strong>Full Name</strong> : ${users[i].fullName} <br>
+        <strong>Email</strong> : ${users[i].email} <br>
+        <strong>Contact</strong> : ${users[i].phone} <br>
+        <strong>Picture</strong> : ${users[i].pics} <br>
+        <button class="del-btn" onclick="Delete(${i});">Delete User</button>
+         <button class="edit-btn" onclick="triggerEdit(${i});">Edit User</button>
+    </div> `
+}
+ document.getElementById("users").innerHTML = cont
+}
+
+display()   
+  
+</script>
+</body>
+</html>
